@@ -1,0 +1,675 @@
+{
+  "label": "Example run — written by hand, not a recording of Gemini",
+  "kind": "example",
+  "recorded": false,
+  "note": "Example run — written by hand, not a recording of Gemini",
+  "response": {
+    "mode": "agent",
+    "steps": [
+      {
+        "n": 1,
+        "tool": "search_places",
+        "args": {},
+        "result": {
+          "ok": true,
+          "places": [
+            {
+              "id": "rusizi-boat-safari",
+              "name": "Rusizi National Park boat safari",
+              "category": "nature",
+              "cost_usd": 30,
+              "duration_hours": 2,
+              "best_time": "morning"
+            },
+            {
+              "id": "rusizi-guided-walk",
+              "name": "Rusizi riverside guided walk",
+              "category": "nature",
+              "cost_usd": 12,
+              "duration_hours": 1.5,
+              "best_time": "morning"
+            },
+            {
+              "id": "club-du-lac-lunch",
+              "name": "Lunch at Hotel Club du Lac Tanganyika",
+              "category": "food",
+              "cost_usd": 18,
+              "duration_hours": 1.5,
+              "best_time": "midday"
+            },
+            {
+              "id": "brochettes-grill",
+              "name": "Brochettes at a local grill",
+              "category": "food",
+              "cost_usd": 8,
+              "duration_hours": 1,
+              "best_time": "midday"
+            },
+            {
+              "id": "saga-beach",
+              "name": "Saga Beach, Lake Tanganyika",
+              "category": "beach",
+              "cost_usd": 5,
+              "duration_hours": 2,
+              "best_time": "afternoon"
+            },
+            {
+              "id": "kiriri-viewpoint",
+              "name": "Kiriri viewpoint",
+              "category": "viewpoint",
+              "cost_usd": 0,
+              "duration_hours": 0.5,
+              "best_time": "late afternoon"
+            },
+            {
+              "id": "musee-vivant",
+              "name": "Musée Vivant",
+              "category": "culture",
+              "cost_usd": 6,
+              "duration_hours": 1.5,
+              "best_time": "afternoon"
+            },
+            {
+              "id": "livingstone-stanley",
+              "name": "Livingstone–Stanley Monument (Mugere)",
+              "category": "culture",
+              "cost_usd": 8,
+              "duration_hours": 1,
+              "best_time": "afternoon"
+            },
+            {
+              "id": "independence-monument",
+              "name": "Independence Monument",
+              "category": "culture",
+              "cost_usd": 0,
+              "duration_hours": 0.5,
+              "best_time": "morning"
+            },
+            {
+              "id": "central-market",
+              "name": "Bujumbura Central Market",
+              "category": "culture",
+              "cost_usd": 4,
+              "duration_hours": 1,
+              "best_time": "morning"
+            }
+          ]
+        },
+        "ok": true,
+        "ms": 0
+      },
+      {
+        "n": 2,
+        "tool": "create_itinerary",
+        "args": {
+          "stops": [
+            {
+              "place_id": "rusizi-boat-safari",
+              "time": "09:00"
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "time": "12:30"
+            },
+            {
+              "place_id": "saga-beach",
+              "time": "15:00"
+            }
+          ]
+        },
+        "result": {
+          "itinerary_id": "itin_d0cfs11o21",
+          "revision": 1,
+          "stops": [
+            {
+              "place_id": "rusizi-boat-safari",
+              "time": "09:00"
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "time": "12:30"
+            },
+            {
+              "place_id": "saga-beach",
+              "time": "15:00"
+            }
+          ],
+          "status": "needs_check"
+        },
+        "ok": true,
+        "ms": 0
+      },
+      {
+        "n": 3,
+        "tool": "check_budget",
+        "args": {
+          "itinerary_id": "itin_d0cfs11o21",
+          "budget_usd": 50
+        },
+        "result": {
+          "ok": false,
+          "error": "BUDGET_EXCEEDED",
+          "total_usd": 56,
+          "budget_usd": 50,
+          "over_by_usd": 6,
+          "breakdown": [
+            {
+              "place_id": "rusizi-boat-safari",
+              "label": "Rusizi National Park boat safari",
+              "cost_usd": 30
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "label": "Lunch at Hotel Club du Lac Tanganyika",
+              "cost_usd": 18
+            },
+            {
+              "place_id": "saga-beach",
+              "label": "Saga Beach, Lake Tanganyika",
+              "cost_usd": 5
+            },
+            {
+              "label": "Transport",
+              "cost_usd": 3,
+              "note": "$1 per stop"
+            }
+          ],
+          "revision": 1
+        },
+        "ok": false,
+        "ms": 0
+      },
+      {
+        "n": 4,
+        "tool": "update_itinerary",
+        "args": {
+          "itinerary_id": "itin_d0cfs11o21",
+          "stops": [
+            {
+              "place_id": "rusizi-guided-walk",
+              "time": "09:00"
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "time": "12:30"
+            },
+            {
+              "place_id": "saga-beach",
+              "time": "15:00"
+            }
+          ]
+        },
+        "result": {
+          "itinerary_id": "itin_d0cfs11o21",
+          "revision": 2,
+          "stops": [
+            {
+              "place_id": "rusizi-guided-walk",
+              "time": "09:00"
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "time": "12:30"
+            },
+            {
+              "place_id": "saga-beach",
+              "time": "15:00"
+            }
+          ],
+          "status": "needs_check"
+        },
+        "ok": true,
+        "ms": 0
+      },
+      {
+        "n": 5,
+        "tool": "check_budget",
+        "args": {
+          "itinerary_id": "itin_d0cfs11o21",
+          "budget_usd": 50
+        },
+        "result": {
+          "ok": true,
+          "total_usd": 38,
+          "budget_usd": 50,
+          "breakdown": [
+            {
+              "place_id": "rusizi-guided-walk",
+              "label": "Rusizi riverside guided walk",
+              "cost_usd": 12
+            },
+            {
+              "place_id": "club-du-lac-lunch",
+              "label": "Lunch at Hotel Club du Lac Tanganyika",
+              "cost_usd": 18
+            },
+            {
+              "place_id": "saga-beach",
+              "label": "Saga Beach, Lake Tanganyika",
+              "cost_usd": 5
+            },
+            {
+              "label": "Transport",
+              "cost_usd": 3,
+              "note": "$1 per stop"
+            }
+          ],
+          "revision": 2
+        },
+        "ok": true,
+        "ms": 0
+      }
+    ],
+    "final_text": "Morning riverside walk, lunch at Hotel Club du Lac Tanganyika, then Saga Beach. Checked total: $38.",
+    "itinerary": {
+      "itinerary_id": "itin_d0cfs11o21",
+      "revision": 2,
+      "status": "checked",
+      "stops": [
+        {
+          "place_id": "rusizi-guided-walk",
+          "time": "09:00",
+          "name": "Rusizi riverside guided walk",
+          "category": "nature",
+          "cost_usd": 12
+        },
+        {
+          "place_id": "club-du-lac-lunch",
+          "time": "12:30",
+          "name": "Lunch at Hotel Club du Lac Tanganyika",
+          "category": "food",
+          "cost_usd": 18
+        },
+        {
+          "place_id": "saga-beach",
+          "time": "15:00",
+          "name": "Saga Beach, Lake Tanganyika",
+          "category": "beach",
+          "cost_usd": 5
+        }
+      ],
+      "total_usd": 38,
+      "budget_usd": 50,
+      "over_by_usd": null,
+      "breakdown": [
+        {
+          "place_id": "rusizi-guided-walk",
+          "label": "Rusizi riverside guided walk",
+          "cost_usd": 12
+        },
+        {
+          "place_id": "club-du-lac-lunch",
+          "label": "Lunch at Hotel Club du Lac Tanganyika",
+          "cost_usd": 18
+        },
+        {
+          "place_id": "saga-beach",
+          "label": "Saga Beach, Lake Tanganyika",
+          "cost_usd": 5
+        },
+        {
+          "label": "Transport",
+          "cost_usd": 3,
+          "note": "$1 per stop"
+        }
+      ]
+    },
+    "status": "valid",
+    "stopped_reason": "done",
+    "history": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": "Plan a one-day trip in Bujumbura for me.\n\nMy budget is $50. Use the tools for prices. Do not invent a total."
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "name": "search_places",
+              "args": {},
+              "id": "ex-1"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "name": "search_places",
+              "response": {
+                "ok": true,
+                "places": [
+                  {
+                    "id": "rusizi-boat-safari",
+                    "name": "Rusizi National Park boat safari",
+                    "category": "nature",
+                    "cost_usd": 30,
+                    "duration_hours": 2,
+                    "best_time": "morning"
+                  },
+                  {
+                    "id": "rusizi-guided-walk",
+                    "name": "Rusizi riverside guided walk",
+                    "category": "nature",
+                    "cost_usd": 12,
+                    "duration_hours": 1.5,
+                    "best_time": "morning"
+                  },
+                  {
+                    "id": "club-du-lac-lunch",
+                    "name": "Lunch at Hotel Club du Lac Tanganyika",
+                    "category": "food",
+                    "cost_usd": 18,
+                    "duration_hours": 1.5,
+                    "best_time": "midday"
+                  },
+                  {
+                    "id": "brochettes-grill",
+                    "name": "Brochettes at a local grill",
+                    "category": "food",
+                    "cost_usd": 8,
+                    "duration_hours": 1,
+                    "best_time": "midday"
+                  },
+                  {
+                    "id": "saga-beach",
+                    "name": "Saga Beach, Lake Tanganyika",
+                    "category": "beach",
+                    "cost_usd": 5,
+                    "duration_hours": 2,
+                    "best_time": "afternoon"
+                  },
+                  {
+                    "id": "kiriri-viewpoint",
+                    "name": "Kiriri viewpoint",
+                    "category": "viewpoint",
+                    "cost_usd": 0,
+                    "duration_hours": 0.5,
+                    "best_time": "late afternoon"
+                  },
+                  {
+                    "id": "musee-vivant",
+                    "name": "Musée Vivant",
+                    "category": "culture",
+                    "cost_usd": 6,
+                    "duration_hours": 1.5,
+                    "best_time": "afternoon"
+                  },
+                  {
+                    "id": "livingstone-stanley",
+                    "name": "Livingstone–Stanley Monument (Mugere)",
+                    "category": "culture",
+                    "cost_usd": 8,
+                    "duration_hours": 1,
+                    "best_time": "afternoon"
+                  },
+                  {
+                    "id": "independence-monument",
+                    "name": "Independence Monument",
+                    "category": "culture",
+                    "cost_usd": 0,
+                    "duration_hours": 0.5,
+                    "best_time": "morning"
+                  },
+                  {
+                    "id": "central-market",
+                    "name": "Bujumbura Central Market",
+                    "category": "culture",
+                    "cost_usd": 4,
+                    "duration_hours": 1,
+                    "best_time": "morning"
+                  }
+                ]
+              },
+              "id": "ex-1"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "name": "create_itinerary",
+              "args": {
+                "stops": [
+                  {
+                    "place_id": "rusizi-boat-safari",
+                    "time": "09:00"
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "time": "12:30"
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "time": "15:00"
+                  }
+                ]
+              },
+              "id": "ex-2"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "name": "create_itinerary",
+              "response": {
+                "itinerary_id": "itin_d0cfs11o21",
+                "revision": 1,
+                "stops": [
+                  {
+                    "place_id": "rusizi-boat-safari",
+                    "time": "09:00"
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "time": "12:30"
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "time": "15:00"
+                  }
+                ],
+                "status": "needs_check"
+              },
+              "id": "ex-2"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "name": "check_budget",
+              "args": {
+                "itinerary_id": "itin_d0cfs11o21",
+                "budget_usd": 50
+              },
+              "id": "ex-3"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "name": "check_budget",
+              "response": {
+                "ok": false,
+                "error": "BUDGET_EXCEEDED",
+                "total_usd": 56,
+                "budget_usd": 50,
+                "over_by_usd": 6,
+                "breakdown": [
+                  {
+                    "place_id": "rusizi-boat-safari",
+                    "label": "Rusizi National Park boat safari",
+                    "cost_usd": 30
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "label": "Lunch at Hotel Club du Lac Tanganyika",
+                    "cost_usd": 18
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "label": "Saga Beach, Lake Tanganyika",
+                    "cost_usd": 5
+                  },
+                  {
+                    "label": "Transport",
+                    "cost_usd": 3,
+                    "note": "$1 per stop"
+                  }
+                ],
+                "revision": 1
+              },
+              "id": "ex-3"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "name": "update_itinerary",
+              "args": {
+                "itinerary_id": "itin_d0cfs11o21",
+                "stops": [
+                  {
+                    "place_id": "rusizi-guided-walk",
+                    "time": "09:00"
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "time": "12:30"
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "time": "15:00"
+                  }
+                ]
+              },
+              "id": "ex-4"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "name": "update_itinerary",
+              "response": {
+                "itinerary_id": "itin_d0cfs11o21",
+                "revision": 2,
+                "stops": [
+                  {
+                    "place_id": "rusizi-guided-walk",
+                    "time": "09:00"
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "time": "12:30"
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "time": "15:00"
+                  }
+                ],
+                "status": "needs_check"
+              },
+              "id": "ex-4"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "name": "check_budget",
+              "args": {
+                "itinerary_id": "itin_d0cfs11o21",
+                "budget_usd": 50
+              },
+              "id": "ex-5"
+            }
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "parts": [
+          {
+            "functionResponse": {
+              "name": "check_budget",
+              "response": {
+                "ok": true,
+                "total_usd": 38,
+                "budget_usd": 50,
+                "breakdown": [
+                  {
+                    "place_id": "rusizi-guided-walk",
+                    "label": "Rusizi riverside guided walk",
+                    "cost_usd": 12
+                  },
+                  {
+                    "place_id": "club-du-lac-lunch",
+                    "label": "Lunch at Hotel Club du Lac Tanganyika",
+                    "cost_usd": 18
+                  },
+                  {
+                    "place_id": "saga-beach",
+                    "label": "Saga Beach, Lake Tanganyika",
+                    "cost_usd": 5
+                  },
+                  {
+                    "label": "Transport",
+                    "cost_usd": 3,
+                    "note": "$1 per stop"
+                  }
+                ],
+                "revision": 2
+              },
+              "id": "ex-5"
+            }
+          }
+        ]
+      },
+      {
+        "role": "model",
+        "parts": [
+          {
+            "text": "Morning riverside walk, lunch at Hotel Club du Lac Tanganyika, then Saga Beach. Checked total: $38."
+          }
+        ]
+      }
+    ],
+    "model": "example",
+    "usage": {
+      "model_calls": 6
+    }
+  }
+}

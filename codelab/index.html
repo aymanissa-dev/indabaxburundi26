@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roam codelab — From Chatbots to AI Agents</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <nav class="sidebar" aria-label="Chapters">
+        <p class="wordmark">Roam<span class="dot" aria-hidden="true"></span></p>
+        <p>Build the trip planner, one idea at a time.</p>
+        <p class="phase">Setup</p>
+        <a href="#chapter-1">1. What we're building</a>
+        <a href="#chapter-2">2. A key and a spending limit</a>
+        <a href="#chapter-3">3. Folder and accounts</a>
+        <a href="#chapter-4">4. How the pieces talk</a>
+        <p class="phase">The Talker</p>
+        <a href="#chapter-5">5. Your first AI reply</a>
+        <a href="#chapter-6">6. A page that shows it</a>
+        <p class="phase">Giving AI hands</p>
+        <a href="#chapter-7">7. Your first tool</a>
+        <a href="#chapter-8">8. One Tool mode</a>
+        <p class="phase">The Agent</p>
+        <a href="#chapter-9">9. The loop</a>
+        <a href="#chapter-10">10. The budget checker</a>
+        <a href="#chapter-11">11. Steps and follow-ups</a>
+        <p class="phase">Safe and shipped</p>
+        <a href="#chapter-12">12. Limits, deploy, replay</a>
+      </nav>
+
+      <main>
+        <article class="chapter" id="chapter-1">
+          <h2>1. What we're building</h2>
+          <p>Roam is a one-day trip planner for Bujumbura. You give it a goal and a budget. Then you watch the same kind of AI work in three ways.</p>
+          <p>Think of three friends helping you plan Saturday:</p>
+          <ul>
+            <li><strong>Chat</strong> just talks. "Just talks." It sounds sure, and it checks nothing.</li>
+            <li><strong>One Tool</strong> looks at our list of places once. "Looks things up once." The prices are ours. Nobody adds them up.</li>
+            <li><strong>Agent</strong> can look things up, write a plan, check the total, and fix the plan. "Plans, checks, fixes, repeats."</li>
+          </ul>
+          <p>Here is the whole idea in one sentence. <strong>The AI suggests. Our code decides.</strong> The model may ask for a tool. It does not run the tool. It does not get to invent a price.</p>
+          <p>The finished app lives in <a href="../roam/">roam/</a>. This codelab builds the same idea from an empty folder. Each chapter shows whole files, so you can copy a file instead of hunting for one line.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Say the three modes out loud, and say what each one is not allowed to do.</p>
+          </div>
+          <p class="nav-row"><span></span><a href="#chapter-2">Next: a key and a spending limit</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-2">
+          <h2>2. Get a free API key and set a spending limit</h2>
+          <p>The model we call is Gemini, from Google AI Studio. An API key is a password for that service. You will put it on the server later. You will not put it in the page, in git, or in a chat.</p>
+          <ol>
+            <li>Open <a href="https://aistudio.google.com/">Google AI Studio</a> and sign in.</li>
+            <li>Create an API key for a project you control.</li>
+            <li>Find the billing or spending-limit settings and set a small cap. A small cap is the real guard. If something loops, the cap stops the bill.</li>
+            <li>Copy the key into a password manager or a local note. Not into this repo.</li>
+          </ol>
+          <p>A model name is not a secret. This project defaults to <code>gemini-3.8-flash</code>, the current fast Flash model in the Gemini docs when the repo was built. You can override it later with <code>GEMINI_MODEL</code>.</p>
+          <aside class="detour">
+            <h3>🧭 Detours</h3>
+            <!-- Ayman: add real issues hit while building -->
+            <p>Nothing here yet.</p>
+          </aside>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> You can see a key, a spending limit is on, and the key is not in any file in the project.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-1">Back</a><a href="#chapter-3">Next: folder and accounts</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-3">
+          <h2>3. Create the folder and your accounts</h2>
+          <p>You need two free accounts: GitHub (the folder lives here) and Vercel (the server runs there). Make both before you write code, the way you set the table before you cook.</p>
+          <p>Make a repo. Inside it, make a folder named <code>roam</code>. Vercel will use <code>roam</code> as the project root, not the repo root. Add these three files. Each one is the whole file.</p>
+          <div class="codeblock">
+            <span class="file">.gitignore</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>node_modules/
+.env*
+!.env.example
+.vercel/
+.DS_Store
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/package.json</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>{
+  "name": "roam",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/.env.example</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>GEMINI_API_KEY=your-google-ai-studio-key
+GEMINI_MODEL=gemini-3.8-flash
+DEMO_PASSCODE=
+MAX_STEPS=8
+</code></pre>
+          </div>
+          <p><code>"type": "module"</code> lets the server file use <code>import</code>. The gitignore keeps real env files out of git, and keeps <code>.env.example</code> in.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> <code>git status</code> does not list a file that contains your real key. <code>.env.example</code> only has placeholders.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-2">Back</a><a href="#chapter-4">Next: how the pieces talk</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-4">
+          <h2>4. How the pieces talk</h2>
+          <p>Three places are involved. Picture a letter, not a magic box.</p>
+          <ol>
+            <li><strong>The browser</strong> is the page on the projector. It sends the trip request. It does not know the API key.</li>
+            <li><strong>Vercel</strong> runs one function, <code>roam/api/agent.js</code>. The key lives here, the way a shop keeps the till password behind the counter.</li>
+            <li><strong>Gemini</strong> is the model. Our function calls it. The model may ask for a tool. Our function decides whether to run it.</li>
+          </ol>
+          <p>The API key is like an M-Pesa PIN. You do not shout a PIN across a room, and you do not print it on the menu. The page is the menu. The function is the person at the till. Only the till uses the PIN.</p>
+          <p>A request looks like this path: browser → Vercel → Gemini → Vercel → browser. Tools run on Vercel, in the middle, where we can check them.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Point at each hop and say where the key is allowed to be. The answer is only on Vercel.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-3">Back</a><a href="#chapter-5">Next: your first AI reply</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-5">
+          <h2>5. Your first AI reply</h2>
+          <p>Chat mode is a phone call with someone who has never seen our price list. They can still sound confident. That is the point of this chapter. We are not asking the model to lie. We are showing that it cannot check.</p>
+          <p>Put the key in <code>roam/.env.local</code> for local work, or in Vercel later. Do not commit that file.</p>
+          <div class="codeblock">
+            <span class="file">roam/vercel.json</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>{
+  "functions": {
+    "api/agent.js": {
+      "maxDuration": 120
+    }
+  }
+}
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/api/agent.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+
+async function handle(request) {
+  if (request.method !== "POST") {
+    return Response.json({ error: "Send a POST request." }, { status: 405 });
+  }
+  const body = await request.json();
+  const message = String(body.message || "").slice(0, 1000);
+  const budget = Number(body.budget_usd);
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) {
+    return Response.json(
+      { error: "API key problem. Check GEMINI_API_KEY in Vercel." },
+      { status: 500 },
+    );
+  }
+
+  const response = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+      encodeURIComponent(MODEL) +
+      ":generateContent",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": key,
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{
+            text: "You are a friendly trip planner for Bujumbura. Suggest a one-day plan within the user's budget. You have no tools.",
+          }],
+        },
+        contents: [{
+          role: "user",
+          parts: [{ text: message + "\n\nMy budget is $" + budget + "." }],
+        }],
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const error = response.status === 429
+      ? "The AI is busy (rate limit). Try again in a minute, or use Replay."
+      : "The AI could not answer just now. Try again, or use Replay.";
+    return Response.json({ error, stopped_reason: "error" }, { status: 502 });
+  }
+
+  const data = await response.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const text = parts.map((part) => part.text || "").join("").trim();
+  return Response.json({
+    mode: "chat",
+    steps: [],
+    final_text: text,
+    itinerary: null,
+    status: "no_itinerary",
+    stopped_reason: "done",
+    history: [],
+    model: MODEL,
+    usage: { model_calls: 1 },
+  });
+}
+
+export default { fetch: handle };
+</code></pre>
+          </div>
+          <p>From the <code>roam</code> folder, run <code>npx vercel dev</code> and POST a short JSON body to <code>/api/agent</code>. You should get words back, and no steps.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> The reply is plain text. The browser still does not contain the key. The JSON says <code>"steps": []</code>.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-4">Back</a><a href="#chapter-6">Next: a page that shows it</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-6">
+          <h2>6. A page that shows the reply</h2>
+          <p>The page is plain HTML, CSS, and JavaScript. No framework and no build. It is like a paper form that posts to the counter.</p>
+          <div class="codeblock">
+            <span class="file">roam/index.html</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
+    &lt;title&gt;Roam.&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Roam.&lt;/h1&gt;
+    &lt;p&gt;Give it a goal. Watch it figure out how.&lt;/p&gt;
+    &lt;form id="trip-form"&gt;
+      &lt;label for="message"&gt;Trip request&lt;/label&gt;
+      &lt;textarea id="message" maxlength="1000"&gt;Plan a one-day trip in Bujumbura for me.&lt;/textarea&gt;
+      &lt;label for="budget"&gt;Budget in dollars&lt;/label&gt;
+      &lt;input id="budget" type="number" min="1" max="10000" value="50" /&gt;
+      &lt;button type="submit"&gt;Run&lt;/button&gt;
+    &lt;/form&gt;
+    &lt;div id="live" aria-live="polite"&gt;&lt;/div&gt;
+    &lt;p&gt;Real place names, made-up prices. Not a booking system.&lt;/p&gt;
+    &lt;script type="module" src="app.js"&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/style.css</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>body {
+  margin: 0;
+  background: #f6f4ef;
+  color: #1b1b1a;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: 20px;
+  padding: 1.2rem;
+}
+button {
+  background: #4a6e53;
+  color: #f6f4ef;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font: inherit;
+  font-weight: 700;
+}
+.bubble {
+  background: #fcfbf8;
+  border-radius: 18px;
+  padding: 1rem;
+}
+.note { color: #5a564f; }
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/app.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>const form = document.querySelector("#trip-form");
+const live = document.querySelector("#live");
+const run = form.querySelector("button");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  run.disabled = true;
+  live.textContent = "Thinking…";
+  try {
+    const response = await fetch("/api/agent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode: "chat",
+        message: document.querySelector("#message").value,
+        budget_usd: Number(document.querySelector("#budget").value),
+      }),
+    });
+    const data = await response.json();
+    live.replaceChildren();
+    const bubble = document.createElement("p");
+    bubble.className = "bubble";
+    bubble.textContent = data.final_text || data.error || "No reply.";
+    const note = document.createElement("p");
+    note.className = "note";
+    note.textContent = "Nothing was checked. No tools were used.";
+    live.append(bubble, note);
+  } catch {
+    live.textContent = "The network failed. You can try again.";
+  } finally {
+    run.disabled = false;
+  }
+});
+</code></pre>
+          </div>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Run the page through <code>vercel dev</code>. You see a speech bubble, and the grey note that nothing was checked.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-5">Back</a><a href="#chapter-7">Next: your first tool</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-7">
+          <h2>7. Your first tool</h2>
+          <p>A tool is a normal JavaScript function plus a short description the model can read. The description is the menu. The function is the kitchen. In this chapter the only dish is "search places".</p>
+          <p>Prices below are made up, on purpose, so a later slide can show the arithmetic. The place names are real.</p>
+          <div class="codeblock">
+            <span class="file">roam/lib/places.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>export const PLACES = [
+  { id: "rusizi-boat-safari", name: "Rusizi National Park boat safari", category: "nature", cost_usd: 30, duration_hours: 2, best_time: "morning", description: "The highlight of a day in Bujumbura. A boat ride on the Rusizi River." },
+  { id: "rusizi-guided-walk", name: "Rusizi riverside guided walk", category: "nature", cost_usd: 12, duration_hours: 1.5, best_time: "morning", description: "A slow walk with a guide along the Rusizi River." },
+  { id: "club-du-lac-lunch", name: "Lunch at Hotel Club du Lac Tanganyika", category: "food", cost_usd: 18, duration_hours: 1.5, best_time: "midday", description: "Lunch on the shore of Lake Tanganyika." },
+  { id: "saga-beach", name: "Saga Beach, Lake Tanganyika", category: "beach", cost_usd: 5, duration_hours: 2, best_time: "afternoon", description: "Sand and time by the water." },
+];
+
+export function getPlace(id) {
+  return PLACES.find((place) => place.id === id) || null;
+}
+
+export function summarizePlace(place) {
+  return {
+    id: place.id,
+    name: place.name,
+    category: place.category,
+    cost_usd: place.cost_usd,
+    duration_hours: place.duration_hours,
+    best_time: place.best_time,
+  };
+}
+</code></pre>
+          </div>
+          <div class="codeblock">
+            <span class="file">roam/lib/tools.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>import { PLACES, summarizePlace } from "./places.js";
+
+export function searchPlacesDeclaration() {
+  return {
+    name: "search_places",
+    description: "List places in and around Bujumbura. Descriptions are not included.",
+    parameters: {
+      type: "object",
+      properties: {
+        category: { type: "string", description: "Optional. nature, food, beach, culture, or viewpoint." },
+        max_cost: { type: "number", description: "Optional. Highest price in dollars." },
+      },
+    },
+  };
+}
+
+export function searchPlaces(args) {
+  if (!args || typeof args !== "object" || Array.isArray(args)) {
+    return { ok: false, error: "INVALID_ARGUMENT", detail: "Tool arguments must be an object." };
+  }
+  let places = PLACES.slice();
+  if (args.category != null) {
+    if (typeof args.category !== "string") {
+      return { ok: false, error: "INVALID_ARGUMENT", detail: "Category must be text." };
+    }
+    places = places.filter((place) => place.category === args.category);
+  }
+  if (args.max_cost != null) {
+    if (typeof args.max_cost !== "number") {
+      return { ok: false, error: "INVALID_ARGUMENT", detail: "max_cost must be a number." };
+    }
+    places = places.filter((place) => place.cost_usd &lt;= args.max_cost);
+  }
+  return { ok: true, places: places.map(summarizePlace) };
+}
+</code></pre>
+          </div>
+          <p>Notice what is missing: the description. The model does not get the long text until a later tool, <code>get_place_details</code>. That is how a sneaky sentence stays out of the first look.</p>
+          <p>The finished place list, with the free viewpoint, brochettes, and the trick cruise, is <a href="../roam/lib/places.js">roam/lib/places.js</a>.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Call <code>searchPlaces({ category: "nature" })</code> in a tiny Node script. You get the safari and the walk, with prices, and no description field.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-6">Back</a><a href="#chapter-8">Next: One Tool mode</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-8">
+          <h2>8. One Tool mode</h2>
+          <p>Picture a restaurant. The model is the guest. It can say "please look up beaches". That sentence is an order slip. Our code is the kitchen. The kitchen cooks. The guest does not walk into the kitchen and invent a price.</p>
+          <p>Gemini calls this function calling. We send a tool menu. If the reply contains a <code>functionCall</code>, we run that function and send a <code>functionResponse</code> back. One Tool mode allows that dance once, then we call the model again with function calling turned off so it has to answer in words.</p>
+          <p>On current Gemini models, keep the model's parts exactly as they arrived, including any <code>thoughtSignature</code>, and copy the call <code>id</code> into the response. The page still does not show hidden reasoning.</p>
+          <div class="codeblock">
+            <span class="file">roam/lib/prompts.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>export function systemInstruction(mode) {
+  if (mode === "chat") {
+    return "You are a friendly trip planner for Bujumbura. Suggest a one-day plan within the user's budget. You have no tools.";
+  }
+  if (mode === "one_tool") {
+    return "You are a friendly trip planner for Bujumbura. Suggest a one-day plan within the user's budget. You may call search_places once to see real places and prices, then answer.";
+  }
+  return "";
+}
+</code></pre>
+          </div>
+          <p>The loop that enforces "once" is the finished function in <a href="../roam/api/agent.js">roam/api/agent.js</a>. The rule in words: if this mode has already run one tool round, the next request sets <code>toolConfig.functionCallingConfig.mode</code> to <code>"NONE"</code> and sends no tools.</p>
+          <aside class="detour">
+            <h3>🧭 Detours</h3>
+            <!-- Ayman: add real issues hit while building -->
+            <p>Nothing here yet.</p>
+          </aside>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> In One Tool mode you see one search step, then a written answer. A second tool request does not run. The grey world of Chat is gone, and there is still no checked total.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-7">Back</a><a href="#chapter-9">Next: the loop</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-9">
+          <h2>9. The loop</h2>
+          <p>An agent is not a smarter paragraph. It is the same model, allowed to ask again after each result. Like sending someone back to the market: they look, they come back, they look again, until the bag is right or you say "enough".</p>
+          <p><code>MAX_STEPS</code> is that "enough". The default is 8. The hard maximum is 12. If we hit it, the run stops with <code>stopped_reason: "step_limit"</code>.</p>
+          <p>This is the whole loop, as a file you can read beside the finished one. The tests replace <code>callModel</code> with a fake, so they never touch the network.</p>
+          <div class="codeblock">
+            <span class="file">roam/api/loop-sketch.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>export async function runLoop({ callModel, maxSteps = 8 }) {
+  const contents = [{ role: "user", parts: [{ text: "Plan a day in Bujumbura. My budget is $50." }] }];
+  const steps = [];
+
+  while (steps.length &lt;= maxSteps) {
+    const response = await callModel({ contents });
+    const content = response.candidates[0].content;
+    contents.push({ role: content.role || "model", parts: content.parts });
+
+    const calls = content.parts.filter((part) => part.functionCall);
+    if (calls.length === 0) {
+      const text = content.parts.map((part) => part.text || "").join("").trim();
+      return { steps, final_text: text, stopped_reason: "done", history: contents };
+    }
+    if (steps.length &gt;= maxSteps) {
+      contents.pop();
+      return { steps, final_text: "", stopped_reason: "step_limit", history: contents };
+    }
+
+    const responses = [];
+    for (const part of calls) {
+      const call = part.functionCall;
+      const result = { ok: true, note: "Our code ran " + call.name };
+      steps.push({ n: steps.length + 1, tool: call.name, args: call.args || {}, result, ok: true });
+      const responsePart = { functionResponse: { name: call.name, response: result } };
+      if (call.id) responsePart.functionResponse.id = call.id;
+      responses.push(responsePart);
+    }
+    contents.push({ role: "user", parts: responses });
+  }
+
+  return { steps, final_text: "", stopped_reason: "step_limit", history: contents };
+}
+</code></pre>
+          </div>
+          <p>Two details matter. We push <code>content.parts</code> unchanged, so a thought signature stays on the same part. And the tool result is a JSON object, which is what <code>functionResponse.response</code> expects.</p>
+          <p>If the model writes a final answer before <code>check_budget</code> has passed for this plan, the finished app marks the run <code>unverified</code>. That is not a success. The screen says "Not checked".</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> In the finished repo, <code>npm test</code> inside <code>roam/</code> shows the fake model’s tools running in order, and a stop at <code>MAX_STEPS</code>.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-8">Back</a><a href="#chapter-10">Next: the budget checker</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-10">
+          <h2>10. The budget checker in our code</h2>
+          <p>A calculator does not get talked out of 2 + 2. The budget checker is that calculator. Same stops in, same total out. It reads <code>cost_usd</code> from our list. A sentence in a description cannot change the number.</p>
+          <p>Transport is $1 for every stop, including a free lookout. That is why three stops add $3 even when one place costs $0.</p>
+          <div class="codeblock">
+            <span class="file">roam/lib/budget.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>import { getPlace } from "./places.js";
+
+export function evaluateBudget(placeIds, budgetUsd) {
+  if (typeof budgetUsd !== "number" || budgetUsd &lt;= 0 || budgetUsd &gt; 10000) {
+    return { ok: false, error: "INVALID_ARGUMENT", detail: "Budget must be from 1 to 10000." };
+  }
+  const breakdown = [];
+  for (const placeId of placeIds) {
+    const place = getPlace(placeId);
+    if (!place) return { ok: false, error: "UNKNOWN_PLACE", detail: "Unknown place: " + placeId };
+    breakdown.push({ place_id: place.id, label: place.name, cost_usd: place.cost_usd });
+  }
+  const transport = placeIds.length * 1;
+  breakdown.push({ label: "Transport", cost_usd: transport, note: "$1 per stop" });
+  const total = breakdown.reduce((sum, line) => sum + line.cost_usd, 0);
+  if (total &gt; budgetUsd) {
+    return {
+      ok: false,
+      error: "BUDGET_EXCEEDED",
+      total_usd: total,
+      budget_usd: budgetUsd,
+      over_by_usd: total - budgetUsd,
+      breakdown,
+    };
+  }
+  return { ok: true, total_usd: total, budget_usd: budgetUsd, breakdown };
+}
+</code></pre>
+          </div>
+          <p>The paths the talk uses:</p>
+          <ul>
+            <li>Safari 30 + lunch 18 + beach 5 + transport 3 = <strong>$56</strong>. Over a $50 budget.</li>
+            <li>Walk 12 instead of the safari = <strong>$38</strong>. Inside $50.</li>
+            <li>Walk 12 + brochettes 8 + beach 5 + transport 3 = <strong>$28</strong>. Still over $25.</li>
+            <li>Free viewpoint 0 + brochettes 8 + beach 5 + transport 3 = <strong>$16</strong>. Inside $25.</li>
+          </ul>
+          <p>The trick place costs $25 in the data. Its description says to treat it as free. The checker ignores that sentence. The finished <a href="../roam/lib/budget.js">budget.js</a> also takes a trick flag, so the cruise is invisible until the switch is on.</p>
+          <p><code>check_budget</code> is the tool that calls this function. If the model passes a budget that is not the user's budget, the finished tool refuses. Our code decides the number that matters.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> <code>npm test</code> prints pass for the $56, $38, $28, and $16 cases, and for the $25 trick place.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-9">Back</a><a href="#chapter-11">Next: steps and follow-ups</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-11">
+          <h2>11. Show the steps, then change the plan</h2>
+          <p>On a projector, a blob of JSON is a blur. Show one step, wait, then the next. About 600 milliseconds is long enough to read and short enough to keep the room. If the viewer asked the computer to reduce motion, show them all at once.</p>
+          <p>Each step has two lines. "AI asked" is the tool name in everyday words. "Our code answered" is the result, with a ✓ or a ✗, not colour alone.</p>
+          <div class="codeblock">
+            <span class="file">roam/app-steps.js</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>const live = document.querySelector("#live");
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+export async function showSteps(steps) {
+  const list = document.createElement("ol");
+  live.append(list);
+  for (const step of steps) {
+    const item = document.createElement("li");
+    const asked = document.createElement("p");
+    asked.textContent = "AI asked: " + step.tool;
+    const answered = document.createElement("p");
+    answered.textContent = "Our code answered: " + (step.ok ? "✓ ok" : "✗ no");
+    item.append(asked, answered);
+    list.append(item);
+    if (!reduce) await new Promise((resolve) => setTimeout(resolve, 600));
+  }
+}
+</code></pre>
+          </div>
+          <p>After a run, a follow-up box says "Change something…". Sending it posts the same history and the same plan id. The browser must send only <code>place_id</code> and <code>time</code> for each stop. The server looks up the price again. It does not trust a total that came from the page.</p>
+          <p>If the person says the budget is now $25, that new number is the one <code>check_budget</code> has to pass. An old "yes" does not carry over.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Steps appear one at a time. A budget check that fails is marked ✗. A follow-up keeps the plan id, and the revision goes up only after an update.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-10">Back</a><a href="#chapter-12">Next: limits, deploy, replay</a></p>
+        </article>
+
+        <article class="chapter" id="chapter-12">
+          <h2>12. Limits, the trick, deploy, and replay</h2>
+          <p>A live demo needs a fence. These are the fences in the finished function. None of them replace the spending cap from chapter 2.</p>
+          <ul>
+            <li>Only POST. A body over 32 KB is refused. A message over 1,000 characters is refused.</li>
+            <li>If <code>DEMO_PASSCODE</code> is set, the request needs the header <code>x-demo-passcode</code>. A wrong one returns a friendly 401, and the page shows a passcode field.</li>
+            <li>A warm server remembers 20 requests per 10 minutes per IP. A new instance forgets. Treat it as a speed bump.</li>
+            <li>Each Gemini call gives up after 20 seconds. The function itself is capped at 120 seconds, under the Hobby plan maximum of 300.</li>
+            <li>The trick switch adds a lakeside cruise whose description tries to boss the model. The checker still charges $25.</li>
+          </ul>
+          <p>Deploy by importing the GitHub repo in Vercel and setting the root directory to <code>roam</code>. Add <code>GEMINI_API_KEY</code>. Add <code>GEMINI_MODEL</code> only if you do not want the default. Do not deploy the key inside a file.</p>
+          <p>The codelab itself is this folder. GitHub Pages can serve it. Use relative links, as this page does. Turn Pages on for the repo, from the main branch, at the <code>/codelab</code> path if your Pages settings ask for a folder. The site URL is the one in the repo README.</p>
+          <p>Replay plays a saved JSON file through the same step code. The badge says replay, not live. <code>replays/scripted.json</code> is an example written for the demo. It is not a recording of Gemini. <code>replays/recorded.json</code> starts like this:</p>
+          <div class="codeblock">
+            <span class="file">roam/replays/recorded.json</span>
+            <button type="button" class="copy">Copy</button>
+            <pre><code>{
+  "label": "No recording yet",
+  "kind": "placeholder",
+  "recorded": false,
+  "note": "No recording yet. After a live rehearsal, use Download this run and replace this file.",
+  "response": null
+}
+</code></pre>
+          </div>
+          <p>After a rehearsal you trust, use <strong>Download this run</strong> and replace that file. Do not type a fake recording by hand and call it real.</p>
+          <h3>Final checklist</h3>
+          <ul>
+            <li>Chat shows a bubble and "Nothing was checked."</li>
+            <li>One Tool shows one search, then words, and no checked total.</li>
+            <li>Agent goes over $50, then lands on a checked total.</li>
+            <li>A $25 follow-up checks again.</li>
+            <li>Trick mode still fails a plan that trusts the "this is free" sentence.</li>
+            <li>Replay works with the network to Gemini blocked.</li>
+            <li><code>npm test</code> passes.</li>
+            <li>A search of the repo finds no pasted Google API key.</li>
+          </ul>
+          <p>The finished files, if you want to compare, are all under <a href="../roam/">roam/</a>. Setup notes are in <a href="../roam/README.md">roam/README.md</a>.</p>
+          <div class="check">
+            <p><strong>✅ Check it works.</strong> Walk the checklist above on the deployed page, at 150% zoom, before you share the screen.</p>
+          </div>
+          <p class="nav-row"><a href="#chapter-11">Back</a><a href="#chapter-1">Start again</a></p>
+        </article>
+      </main>
+    </div>
+    <script>
+      document.querySelectorAll(".copy").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const code = button.parentElement.querySelector("code").textContent;
+          try {
+            await navigator.clipboard.writeText(code);
+            button.textContent = "Copied";
+          } catch {
+            button.textContent = "Select the code";
+          }
+          window.setTimeout(() => {
+            button.textContent = "Copy";
+          }, 1500);
+        });
+      });
+    </script>
+  </body>
+</html>

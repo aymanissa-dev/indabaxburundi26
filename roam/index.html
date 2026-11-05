@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Roam. — Give it a goal. Watch it figure out how.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" sizes="16x16" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="wordmark">Roam<span class="dot" aria-hidden="true"></span><span class="sr">.</span></h1>
+      <p class="tagline">Give it a goal. Watch it figure out how.</p>
+    </header>
+
+    <main>
+      <section class="panel controls" aria-label="Trip request">
+        <div class="modes" role="radiogroup" aria-label="Mode">
+          <button type="button" role="radio" id="mode-chat" data-mode="chat" aria-checked="true">
+            <span class="mode-name">Chat</span>
+            <span class="mode-help">Just talks</span>
+          </button>
+          <button type="button" role="radio" id="mode-one-tool" data-mode="one_tool" aria-checked="false">
+            <span class="mode-name">One Tool</span>
+            <span class="mode-help">Looks things up once</span>
+          </button>
+          <button type="button" role="radio" id="mode-agent" data-mode="agent" aria-checked="false">
+            <span class="mode-name">Agent</span>
+            <span class="mode-help">Plans, checks, fixes, repeats</span>
+          </button>
+        </div>
+
+        <form id="trip-form">
+          <div class="field">
+            <label for="message">Trip request</label>
+            <textarea id="message" name="message" rows="2" maxlength="1000" required>Plan a one-day trip in Bujumbura for me.</textarea>
+          </div>
+          <div class="field budget-field">
+            <label for="budget">Budget in dollars</label>
+            <input id="budget" name="budget" type="number" min="1" max="10000" step="1" value="50" inputmode="numeric" required />
+          </div>
+          <div class="field">
+            <label class="check">
+              <input id="trick" name="trick" type="checkbox" />
+              <span>Trick: add a sneaky place</span>
+            </label>
+          </div>
+          <div class="field" id="passcode-row" hidden>
+            <label for="passcode">Passcode</label>
+            <input id="passcode" name="passcode" type="password" autocomplete="off" />
+          </div>
+          <div class="actions">
+            <button class="run" id="run" type="submit">Run</button>
+          </div>
+          <div class="tool-row">
+            <label for="replay-pick">Replay</label>
+            <select id="replay-pick">
+              <option value="recorded">Recorded real run</option>
+              <option value="scripted">Example run</option>
+            </select>
+            <button type="button" id="replay">Replay</button>
+            <button type="button" id="download" class="ghost" disabled>Download this run</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel output" aria-label="What happened">
+        <div id="live" aria-live="polite">
+          <p class="intro">Pick a mode and press Run. Chat only talks. One Tool looks up places once. Agent plans, checks, and fixes.</p>
+        </div>
+        <form id="follow-up" hidden>
+          <label for="follow-message">Change something…</label>
+          <div class="follow-row">
+            <input id="follow-message" type="text" maxlength="1000" placeholder="Actually, my budget is now $25" />
+            <button type="submit">Send</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>Real place names, made-up prices. Not a booking system.</p>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
