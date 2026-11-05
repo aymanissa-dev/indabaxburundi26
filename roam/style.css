@@ -146,7 +146,31 @@ textarea { resize: vertical; min-height: 5.2rem; }
   align-items: center;
 }
 
-button.run, .follow-row button, .tool-row button {
+.tool-row { margin-top: 0.8rem; }
+
+.tool-row label { margin: 0; }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+}
+
+.check input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--green);
+}
+
+select {
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0.5rem 0.65rem;
+}
+
+button.run, .follow-row button, #replay {
   background: var(--green);
   color: #f6f4ef;
   border: 0;
@@ -154,6 +178,26 @@ button.run, .follow-row button, .tool-row button {
   padding: 0.65rem 1.3rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--dark);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.replay-badge {
+  display: inline-block;
+  margin: 0 0 0.55rem;
+  background: var(--dark);
+  color: var(--bg);
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.2rem 0.8rem;
 }
 
 button:disabled { opacity: 0.55; cursor: wait; }

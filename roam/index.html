@@ -44,12 +44,27 @@
             <label for="budget">Budget in dollars</label>
             <input id="budget" name="budget" type="number" min="1" max="10000" step="1" value="50" inputmode="numeric" required />
           </div>
+          <div class="field">
+            <label class="check">
+              <input id="trick" name="trick" type="checkbox" />
+              <span>Trick: add a sneaky place</span>
+            </label>
+          </div>
           <div class="field" id="passcode-row" hidden>
             <label for="passcode">Passcode</label>
             <input id="passcode" name="passcode" type="password" autocomplete="off" />
           </div>
           <div class="actions">
             <button class="run" id="run" type="submit">Run</button>
+          </div>
+          <div class="tool-row">
+            <label for="replay-pick">Replay</label>
+            <select id="replay-pick">
+              <option value="recorded">Recorded real run</option>
+              <option value="scripted">Example run</option>
+            </select>
+            <button type="button" id="replay">Replay</button>
+            <button type="button" id="download" class="ghost" disabled>Download this run</button>
           </div>
         </form>
       </section>

@@ -20,6 +20,10 @@ const els = {
   run: document.querySelector("#run"),
   passcodeRow: document.querySelector("#passcode-row"),
   passcode: document.querySelector("#passcode"),
+  trick: document.querySelector("#trick"),
+  replayPick: document.querySelector("#replay-pick"),
+  replay: document.querySelector("#replay"),
+  download: document.querySelector("#download"),
   live: document.querySelector("#live"),
   follow: document.querySelector("#follow-up"),
   followMessage: document.querySelector("#follow-message"),
@@ -28,6 +32,7 @@ const els = {
 let mode = "chat";
 let history = null;
 let itinerary = null;
+let lastLive = null;
 let busy = false;
 let hintTimer = 0;
 
@@ -63,6 +68,8 @@ els.follow.addEventListener("submit", (event) => {
 });
 
 els.passcode.addEventListener("change", () => writePasscode(els.passcode.value));
+els.replay.addEventListener("click", () => playReplay(els.replayPick.value));
+els.download.addEventListener("click", downloadRun);
 
 function setMode(next) {
   mode = next;
@@ -109,7 +116,7 @@ async function runTrip({ followUp }) {
         budget_usd: budget,
         history: followUp ? history : null,
         itinerary: followUp ? leanItinerary(itinerary) : null,
-        trick: false,
+        trick: els.trick.checked,
       }),
     });
 
@@ -133,6 +140,8 @@ async function runTrip({ followUp }) {
 
     history = Array.isArray(data.history) ? data.history : null;
     itinerary = data.itinerary || null;
+    lastLive = data;
+    els.download.disabled = false;
     if (followUp) els.followMessage.value = "";
     await renderRun(data);
   } catch {
@@ -160,8 +169,56 @@ function renderNotice(text) {
   els.live.replaceChildren(el("p", "banner", text));
 }
 
-async function renderRun(data) {
+async function playReplay(kind) {
+  if (busy) return;
+  setBusy(true);
+  try {
+    const name = kind === "recorded" ? "recorded" : "scripted";
+    const response = await fetch(`replays/${name}.json`);
+    if (!response.ok) throw new Error("missing");
+    const file = await response.json();
+    if (!file.response) {
+      els.live.replaceChildren();
+      els.live.append(el("p", "replay-badge", "↺ REPLAY, NOT LIVE"));
+      els.live.append(el("p", "banner", file.label || "No recording yet"));
+      if (file.note && file.note !== file.label) els.live.append(el("p", "note", file.note));
+      els.follow.hidden = true;
+      return;
+    }
+    await renderRun(file.response, { replay: true, label: file.label });
+  } catch {
+    renderNotice("The saved run could not be opened.");
+  } finally {
+    setBusy(false);
+  }
+}
+
+function downloadRun() {
+  if (!lastLive) return;
+  const payload = {
+    label: "Recorded real run",
+    kind: "recorded",
+    recorded: true,
+    note: "Downloaded from a live run. Check it, then replace replays/recorded.json with this file.",
+    response: lastLive,
+  };
+  const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = el("a");
+  link.href = url;
+  link.download = "recorded.json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function renderRun(data, options = {}) {
   els.live.replaceChildren();
+  if (options.replay) {
+    els.live.append(el("p", "replay-badge", "↺ REPLAY, NOT LIVE"));
+    if (options.label) els.live.append(el("p", "note", options.label));
+  }
   els.live.append(el("p", "mode-flag", MODE_LABELS[data.mode] || "Run"));
   if (data.error) els.live.append(el("p", "banner", data.error));
 
@@ -178,7 +235,7 @@ async function renderRun(data) {
     else if (data.final_text) els.live.append(renderAnswer(data));
   }
 
-  els.follow.hidden = !history;
+  els.follow.hidden = Boolean(options.replay) || !history;
 }
 
 function renderChat(text) {
@@ -309,7 +366,9 @@ function money(value) {
 function setBusy(next) {
   busy = next;
   els.run.disabled = next;
+  els.replay.disabled = next;
   els.follow.querySelector("button").disabled = next;
+  els.download.disabled = next || !lastLive;
 }
 
 function showPasscode() {
