@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f5f0" />
     <title>Roam. — Give it a goal. Watch it figure out how.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Syne:wght@600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -16,30 +17,58 @@
   </head>
   <body>
     <header class="site-header">
-      <div class="nav">
-        <h1 class="wordmark">Roam<span class="dot" aria-hidden="true"></span><span class="sr">.</span></h1>
+      <div class="wrap nav">
+        <p class="wordmark">Roam<span class="dot" aria-hidden="true"></span><span class="sr">.</span></p>
+        <p class="nav-meta">IndabaX Burundi 2026</p>
       </div>
-      <p class="tagline">Give it a goal. Watch it <em>figure out how.</em></p>
+
+      <div class="wrap hero">
+        <p class="eyebrow">Live demo</p>
+        <h1>Give it a goal. Watch it figure out how.</h1>
+        <p class="lede">
+          An AI travel planner for Bujumbura. Same Gemini model. What changes is what our code lets it do.
+        </p>
+      </div>
     </header>
 
     <main>
-      <div class="stage">
-        <section class="panel controls" aria-label="Trip request">
-          <div class="modes" role="radiogroup" aria-label="Mode">
-            <button type="button" role="radio" id="mode-chat" data-mode="chat" aria-checked="true">
-              <span class="mode-name">Chat</span>
-              <span class="mode-help">Just talks</span>
-            </button>
-            <button type="button" role="radio" id="mode-one-tool" data-mode="one_tool" aria-checked="false">
-              <span class="mode-name">One Tool</span>
-              <span class="mode-help">Looks things up once</span>
-            </button>
-            <button type="button" role="radio" id="mode-agent" data-mode="agent" aria-checked="false">
-              <span class="mode-name">Agent</span>
-              <span class="mode-help">Plans, checks, fixes, repeats</span>
-            </button>
-          </div>
+      <section class="wrap modes-section" aria-labelledby="modes-title">
+        <div class="section-head">
+          <p class="eyebrow">Three modes</p>
+          <h2 id="modes-title">Who decides the next turn?</h2>
+        </div>
+        <div class="modes" role="radiogroup" aria-label="Mode">
+          <button type="button" role="radio" id="mode-chat" data-mode="chat" aria-checked="true">
+            <span class="mode-top">
+              <span class="mode-kicker">Chatbot</span>
+              <span class="mode-state" aria-hidden="true">Selected</span>
+            </span>
+            <span class="mode-name">Chat</span>
+            <span class="mode-help">Talks to you. Checks nothing. No tools.</span>
+          </button>
+          <button type="button" role="radio" id="mode-one-tool" data-mode="one_tool" aria-checked="false">
+            <span class="mode-top">
+              <span class="mode-kicker">One lookup</span>
+              <span class="mode-state" aria-hidden="true">Selected</span>
+            </span>
+            <span class="mode-name">One Tool</span>
+            <span class="mode-help">Looks up places once, then stops. Nobody adds up the prices.</span>
+          </button>
+          <button type="button" role="radio" id="mode-agent" data-mode="agent" aria-checked="false">
+            <span class="mode-top">
+              <span class="mode-kicker">AI agent</span>
+              <span class="mode-state" aria-hidden="true">Selected</span>
+            </span>
+            <span class="mode-name">Agent</span>
+            <span class="mode-help">Plans, checks the budget, and fixes the plan until it fits.</span>
+          </button>
+        </div>
+      </section>
 
+      <div class="wrap workspace">
+        <section class="panel controls" aria-label="Trip request">
+          <p class="eyebrow">The request</p>
+          <h2 class="panel-title">Tell it the goal.</h2>
           <form id="trip-form">
             <div class="field">
               <label for="message">Trip request</label>
@@ -68,6 +97,7 @@
         </section>
 
         <section class="panel output" aria-labelledby="happened-title">
+          <p class="eyebrow">The trace</p>
           <h2 id="happened-title" class="panel-title">What happened</h2>
           <div id="live" aria-live="polite">
             <p class="intro">Pick a mode and press Run. Chat only talks. One Tool looks up places once. Agent plans, checks, and fixes.</p>
@@ -82,19 +112,23 @@
         </section>
       </div>
 
-      <div class="tool-row">
-        <label for="replay-pick">Replay</label>
-        <select id="replay-pick">
-          <option value="recorded">Recorded real run</option>
-          <option value="scripted">Example run</option>
-        </select>
-        <button type="button" id="replay">Replay</button>
-        <button type="button" id="download" class="ghost" disabled>Download this run</button>
+      <div class="wrap tool-bar">
+        <div class="tool-row">
+          <label for="replay-pick">Replay</label>
+          <select id="replay-pick">
+            <option value="recorded">Recorded real run</option>
+            <option value="scripted">Example run</option>
+          </select>
+          <button type="button" id="replay">Replay</button>
+          <button type="button" id="download" class="ghost" disabled>Download this run</button>
+        </div>
       </div>
     </main>
 
     <footer>
-      <p>Real place names, made-up prices. Not a booking system.</p>
+      <div class="wrap">
+        <p>Real place names, made-up prices. Not a booking system.</p>
+      </div>
     </footer>
     <script type="module" src="app.js"></script>
   </body>
