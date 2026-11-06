@@ -382,7 +382,7 @@
             </div>
             <p>You want <code>v20</code> or higher. If the command is not found, install Node from the official site, then open a new terminal.</p>
             <div class="callout callout-warning"><p><strong>The key stays off the page</strong>Do not paste it into <code>index.html</code>, <code>app.js</code>, a slide, or a chat. The browser never receives <code>GEMINI_API_KEY</code>. You will put the placeholder names in <code>roam/.env.example</code> and the real value only in Vercel, or in <code>roam/.env.local</code> on your machine.</p></div>
-            <p>A model name is not a secret. This repo defaults to <code>gemini-3.8-flash</code>. You can override it later with <code>GEMINI_MODEL</code>.</p>
+            <p>A model name is not a secret. Use <code>gemini-3.5-flash-lite</code>. You can override it with <code>GEMINI_MODEL</code> if another Gemini Flash model works for you.</p>
             <div class="checkpoint"><p class="checkpoint-label">Check it</p><p><code>node -v</code> prints 20 or newer. You know where the key lives, and it is not in a file you would commit.</p></div>
           `,
         },
@@ -603,7 +603,7 @@
 # Never commit a real key. The browser never receives GEMINI_API_KEY.
 
 GEMINI_API_KEY=your-google-ai-studio-key
-GEMINI_MODEL=gemini-3.8-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 DEMO_PASSCODE=
 MAX_STEPS=8</code></pre>
             </div>
@@ -616,7 +616,7 @@ MAX_STEPS=8</code></pre>
             <ol>
               <li>Import the GitHub repo in Vercel.</li>
               <li>Set the project <strong>Root Directory</strong> to <code>roam</code>.</li>
-              <li>Add <code>GEMINI_API_KEY</code>. Add <code>GEMINI_MODEL</code>, <code>DEMO_PASSCODE</code>, or <code>MAX_STEPS</code> only if you want to override the defaults.</li>
+              <li>Add <code>GEMINI_API_KEY</code> and set <code>GEMINI_MODEL</code> to <code>gemini-3.5-flash-lite</code>. Add <code>DEMO_PASSCODE</code> or <code>MAX_STEPS</code> only if you want to override those defaults.</li>
               <li>Do not set a build command. There is no frontend build.</li>
             </ol>
             <div class="code-block">
