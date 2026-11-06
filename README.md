@@ -7,7 +7,7 @@ This repo has three parts:
 ```
 indabaxburundi26/
 ├── roam/      # The working demo app — see roam/README.md for setup
-├── codelab/   # A self-guided, step-by-step walkthrough for rebuilding it yourself
+├── codelab/   # A stepped workshop that walks the demo, for someone new to agents
 └── slides/    # The talk deck
 ```
 
@@ -21,7 +21,7 @@ Full setup instructions, prerequisites, and architecture notes are in [`roam/REA
 
 **[Live: aymanissa-dev.github.io/indabaxburundi26/codelab/](https://aymanissa-dev.github.io/indabaxburundi26/codelab/)**
 
-A self-contained walkthrough that rebuilds `roam/` from an empty folder — from your first AI reply, to your first tool, to a full agent loop with a budget checker, deployed on Vercel with your API key kept safe. No prior AI or backend experience required.
+A stepped workshop for someone new to agents. It walks the Roam demo in this repo — three modes, the loop, the budget checker, and how to run it locally. GitHub Pages publishes the repository root, so the single file `codelab/index.html` is served at [/codelab/](https://aymanissa-dev.github.io/indabaxburundi26/codelab/). The trip planner itself runs on Vercel, not on Pages.
 
 ## slides/
 
